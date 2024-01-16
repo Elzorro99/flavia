@@ -45,8 +45,6 @@ The Flavia project is a sub-network of the Bittensor network, focused on decentr
 
 **Run a validator:**
 
-```pm2 start "python3 run_validator --process_name validator-net17 --netuid 17 --wallet.name <coldkey> --wallet.hotkey <hotkey> --sense.base_url_diffusions http://host:port --sense.base_url_turbomind http://host:port --sense.api_key (your api key) --logging.debug"```
-
 ## 🔧 Daemon Installation (Inference)
 
 **Please check https://github.com/Elzorro99/sense**
