@@ -50,7 +50,7 @@ class BaseValidatorNeuron(BaseNeuron):
         self.scores = torch.zeros_like(self.metagraph.S, dtype=torch.float32)
         self.cp_scores = torch.zeros_like(self.metagraph.S, dtype=torch.float32)
         self.df_scores = torch.zeros_like(self.metagraph.S, dtype=torch.float32)
-        self.moving_averaged_scores = None;
+        self.moving_averaged_scores = torch.zeros_like(self.metagraph.S, dtype=torch.float32);
 
 
         # Init sync with the network. Updates the metagraph.
@@ -149,9 +149,11 @@ class BaseValidatorNeuron(BaseNeuron):
                     self.step += 1
 
                 except Exception as err:
-                    bt.logging.error("Error during validation, wait 15s", str(err))
+                    bt.logging.error("Error during validation")
                     bt.logging.debug(print_exception(type(err), err, err.__traceback__))
-                    time.sleep(15)
+                    self.sync()
+                    self.step += 1
+                    time.sleep(1)
                     # Continue to the next iteration of the loop
                     continue
 
@@ -324,8 +326,8 @@ class BaseValidatorNeuron(BaseNeuron):
         self.scores: torch.FloatTensor = alpha * scattered_rewards + (
             1 - alpha
         ) * self.scores.to(self.device)
-        bt.logging.debug(f"Updated moving avg scores: {self.scores}")
-
+        bt.logging.debug(f"Updated scores: {self.scores}")
+            
     def update_cp_scores(self, rewards: torch.FloatTensor, uids: List[int]):
         """Performs exponential moving average on the scores based on the rewards received from the miners."""
 
@@ -346,7 +348,7 @@ class BaseValidatorNeuron(BaseNeuron):
 
         # Update scores with rewards produced by this step.
         # shape: [metagraph.n]
-        alpha: float = self.config.neuron.moving_average_alpha
+        alpha: float = 0.15
 
         # Compute exponential moving average.
         self.cp_scores: torch.FloatTensor = alpha * scattered_rewards + (1 - alpha) * self.cp_scores.to(self.device)

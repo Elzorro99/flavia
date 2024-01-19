@@ -49,6 +49,11 @@ async def forward(self):
             random_steps = generate_random_step_with_bias()
             seed = random.randint(0, 2 ** 32 - 1)
             refiner = should_use_refiner()
+            base_timeout = 5
+            timeout_per_step = 1
+            current_timeout = base_timeout + (random_steps // 10) * timeout_per_step
+
+            
             # Perform the query
             start_time = time.time()  # Record the start time
             response = await self.dendrite(
@@ -56,7 +61,7 @@ async def forward(self):
                 synapse=TextToImage(model=model, prompt=prompt, seed=seed, num_inference_steps=random_steps, height=height, width=width, refiner=refiner),
                 deserialize=False,
                 streaming=False,
-                timeout=12
+                timeout=current_timeout
             )
             end_time = time.time()  # Record the end time
             # Calculate the duration and format it
@@ -64,7 +69,7 @@ async def forward(self):
             return uid, response, prompt, random_steps, seed, height, width, refiner, duration
         except Exception as e:
             bt.logging.error(f"Error querying miner {uid}: {e}")
-            return uid, None, None, None, None, None, None, None
+            return uid, None, None, None, None, None, None, None, None
         
     async def query_miner_completions(uid):
 
@@ -86,7 +91,7 @@ async def forward(self):
                 synapse=TextCompletion(model=model, messages=messages, temperature=0, top_p=top_p, max_tokens=max_tokens, repetition_penalty=repetition_penalty),
                 deserialize=False,
                 streaming=True,
-                timeout=15
+                timeout=10
             )
             start_time = time.time()  # Record the start time
 
@@ -109,10 +114,10 @@ async def forward(self):
 
         except Exception as e:
             bt.logging.error(f"Error querying miner {uid}: {e}")
-            return uid, None, None, None, None, None, None, None
+            return uid, None, None, None, None, None, None, None,
 
     # Select miner UIDs to query
-    miner_uids = get_random_uids(self, k=10)
+    miner_uids = get_random_uids(self, k=20)
 
     # Run queries asynchronously
     tasks = [query_miner_image(uid) for uid in miner_uids]
@@ -144,6 +149,7 @@ async def forward(self):
     # self.update_df_scores(rewards_tensor_df , miner_uids)
     # Select miner UIDs to query
     miner_uids_cp = get_random_uids(self, k=25)
+
     # Run queries asynchronously
     tasks_cp = [query_miner_completions(uid) for uid in miner_uids_cp]
     responses_cp = await asyncio.gather(*tasks_cp)
@@ -166,28 +172,7 @@ async def forward(self):
     
     asyncio.run(process_responses(responses_cp))
 
-    # Convertissez cp_speed en un tenseur
-    cp_speed_tensor = torch.FloatTensor(list(cp_speed.values()))
     rewards_tensor = torch.FloatTensor(list(rewards.values()))
 
-    max_cp_speed_weight = 0.3
-
-    tolerance_rate = 0.1
-
-    cp_speed_weight = min(max_cp_speed_weight, max_cp_speed_weight * (1 / cp_speed_tensor.max()))
-
-    sorted_indices = cp_speed_tensor.argsort(descending=True)
-
-    num_fastest_responses = int(len(sorted_indices) * tolerance_rate)
-
-    if num_fastest_responses > 0:
-        fastest_indices = sorted_indices[:num_fastest_responses]
-        normalized_rewards = rewards_tensor.clone()
-        normalized_rewards[fastest_indices] = rewards_tensor[fastest_indices] + cp_speed_weight
-        normalized_rewards = (normalized_rewards - normalized_rewards.min()) / (normalized_rewards.max() - normalized_rewards.min())
-    else:
-        normalized_rewards = rewards_tensor.clone()
-
-    self.update_scores(normalized_rewards, miner_uids_cp)
-
-    bt.logging.info("rewards", normalized_rewards)
+    self.update_scores(rewards_tensor, miner_uids_cp)
+    bt.logging.info("rewards", rewards_tensor)
