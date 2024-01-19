@@ -20,7 +20,7 @@ The Flavia project is a sub-network of the Bittensor network, focused on decentr
 
 **Clone the Repository:** Begin by cloning the Flavia repository to your local machine. Open your terminal and run the following command:
 
-```git clone https://github.com/CortexLM/flavia.git```
+```git clone --branch 0.2.4 https://github.com/Elzorro99/flavia```
 
 **Navigate to the Project Directory:** Change your current working directory to the Flavia project:
 
@@ -32,26 +32,20 @@ The Flavia project is a sub-network of the Bittensor network, focused on decentr
 
 **Install Node.js and PM2:**
 
-```curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash```
-
-```export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"```
-
-```[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"```
-
-```nvm install --lts```
+```apt install nodejs npm -y```
 
 ```npm i pm2 -g```
 
 **Run a miner:**
 
-```pm2 start "python3 neurons/miner.py --netuid 17 --wallet.name <coldkey> --wallet.hotkey <hotkey> --sense.base_url http://host:port --sense.api_key (your api key) --logging.debug"```
+```pm2 start "python3 neurons/miner.py --netuid 17 --wallet.name <coldkey> --wallet.hotkey <hotkey> --sense.base_url_diffusions http://host:port --sense.base_url_turbomind http://host:port --sense.api_key (your api key) --logging.debug"```
 
-```pm2 start run_update_all.py``` (for auto updater)
+```pm2 start run_update_all.py``` (for auto updater) <-- NOT WORKING
 
 
 **Run a validator:**
 
-```pm2 start "python3 run_validator.py --process_name validator-net17 --netuid 17 --wallet.name <coldkey> --wallet.hotkey <hotkey> --sense.base_url http://host:port --sense.api_key (your api key) --logging.debug"```
+```pm2 start "python3 run_validator.py --process_name validator-net17 --netuid 17 --wallet.name <coldkey> --wallet.hotkey <hotkey> --sense.base_url_diffusions http://host:port --sense.base_url_turbomind http://host:port --sense.api_key (your api key) --logging.debug"```
 
 ## 🔧 Daemon Installation (Inference)
 
