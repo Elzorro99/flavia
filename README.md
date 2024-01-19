@@ -18,17 +18,21 @@ Introduction: **Bittensor Subnet 17** Flavia, A Decentralized Model Inference Su
 The Flavia project is a sub-network of the Bittensor network, focused on decentralized model inference at different scales.
 ## 🔧 Installation
 
+
 **Clone the Repository:** Begin by cloning the Flavia repository to your local machine. Open your terminal and run the following command:
 
 ```git clone --branch 0.2.2 https://github.com/Elzorro99/flavia```
+
 
 **Navigate to the Project Directory:** Change your current working directory to the Flavia project:
 
 ```cd flavia```
 
+
 **Install the Project:** Use pip to install the project. Run:
 
 ```pip install -e .```
+
 
 **Install Node.js and PM2:**
 
@@ -36,24 +40,28 @@ The Flavia project is a sub-network of the Bittensor network, focused on decentr
 
 ```npm i pm2 -g```
 
+
 **Run a miner:**
 
 ```pm2 start "python3 neurons/miner.py --netuid 17 --wallet.name <coldkey> --wallet.hotkey <hotkey> --sense.base_url_diffusions http://host:port --sense.base_url_turbomind http://host:port --sense.api_key (your api key) --logging.debug"```
 
-```pm2 start run_update_all.py``` (for auto updater)
+```pm2 start run_update_all.py``` (for auto updater) <-- NOT WORKING
 
 
 **Run a validator:**
 
 ```pm2 start "python3 run_validator.py --process_name validator-net17 --netuid 17 --wallet.name <coldkey> --wallet.hotkey <hotkey> --sense.base_url_diffusions http://host:port --sense.base_url_turbomind http://host:port --sense.api_key (your api key) --logging.debug"```
 
+
 ## 🔧 Daemon Installation (Inference)
 
 **Please check https://github.com/Elzorro99/sense**
 
+
 ## 📋 Requirements
 
 TODO
+
 
 ## ⚖️ Support our Subnet: Assigning weights
 As a validator in the Bittensor network, your support is crucial for the success and efficiency of subnets like Flavia. We invite you to consider assigning weights to our subnet, which will significantly contribute to its performance and the overall robustness of the network.
@@ -63,8 +71,6 @@ To allocate weights to the Flavia subnet, you can use the ```btcli root weights`
 By assigning weights to our subnet, you play a vital role in enhancing its inference capabilities and overall contribution to the BitTensor network. Your support helps us maintain a high-performance, reliable, and efficient subnet for decentralized model inference.
 
 We appreciate your contribution and thank you for your support in advancing decentralized AI with Flavia.
-
-
 
 
 ## 📜 License
