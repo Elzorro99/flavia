@@ -224,10 +224,16 @@ def get_config() -> "bt.Config":
 
     # Sense
     parser.add_argument(
-        "--sense.base_url",
+        "--sense.base_url_diffusions",
         type=str,
-        help="Base URL for Sense Daemon",
+        help="Base URL for Sense Daemon Diffusion",
         default="http://127.0.0.1:8000",
+    )
+    parser.add_argument(
+        "--sense.base_url_turbomind",
+        type=str,
+        help="Base URL for Sense Daemon Turbomind",
+        default="http://127.0.0.1:8001",
     )
     parser.add_argument(
         "--sense.api_key",
