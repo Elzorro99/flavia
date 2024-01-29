@@ -32,15 +32,13 @@ One of the most striking aspects of the Flavia project is its commitment to demo
 **Clone the Repository & install the necessary requirements**
 
 ````
-git clone https://github.com/CortexLM/flavia.git && cd flavia && pip install -e .
+git clone --branch 0.2.7 https://github.com/Elzorro99/flavia && cd flavia && pip install -e .
 ````
-
-
 
 **Mining:**
 
 ````
-pm2 start src/flavia/neurons/miner/miner.py --interpreter python3 --name miner<ID>-net17 -- --netuid 17 --wallet.name <coldkey> --wallet.hotkey <hotkey> --sense.base_url http://host:port --sense.api_key (your api key) --logging.debug
+pm2 start "python3 src/flavia/neurons/miner/miner.py --netuid 17 --wallet.name <coldkey> --wallet.hotkey <hotkey> --sense.base_url_diffusions http://host:port --sense.base_url_turbomind http://host:port --sense.api_key (your api key) --logging.debug"
 
 pm2 start run_update_all.py --name auto_update_mining (for auto updater)
 ````
