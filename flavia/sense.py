@@ -7,10 +7,16 @@ def add_args(parser):
 
     # Argument for Sense base URL
     parser.add_argument(
-        "--sense.base_url",
+        "--sense.base_url_diffusions",
         type=str,
-        help="Base URL for Sense Daemon",
+        help="Base URL for Sense Daemon Diffusion",
         default="http://127.0.0.1:8000",
+    )
+    parser.add_argument(
+        "--sense.base_url_turbomind",
+        type=str,
+        help="Base URL for Sense Daemon Turbomind",
+        default="http://127.0.0.1:8001",
     )
 
     # Argument for Sense API key
@@ -22,12 +28,17 @@ def add_args(parser):
     )
 
 class SenseClient:
-    def __init__(self, base_url='http://127.0.0.1:8000', api_key=None):
-        if base_url.endswith('/'):
+    def __init__(self, base_url_diffusions='http://127.0.0.1:8000', base_url_turbomind='http://127.0.0.1:8001', api_key=None):
+        if base_url_diffusions.endswith('/'):
             # Si elle se termine par '/', supprimez-le en utilisant le slicing
-            base_url = base_url[:-1]
-        bt.logging.info(f"Use Sense Server {base_url}")
-        self.base_url = base_url
+            base_url_diffusions = base_url_diffusions[:-1]
+        if base_url_turbomind.endswith('/'):
+            # Si elle se termine par '/', supprimez-le en utilisant le slicing
+            base_url_turbomind = base_url_turbomind[:-1]
+        bt.logging.info(f"Use Sense Server Diffusion {base_url_diffusions}")
+        bt.logging.info(f"Use Sense Server Turbomind {base_url_turbomind}")
+        self.base_url_diffusions = base_url_diffusions
+        self.base_url_turbomind = base_url_turbomind
         
         self.headers = {'Authorization': f'Bearer {api_key}', 'Content-Type': 'application/json',} if api_key else {}
 
@@ -48,7 +59,7 @@ class SenseClient:
         Returns:
             The JSON response from the server.
         """
-        url = f"{self.base_url}/diffusion/{model}/text_to_image"
+        url = f"{self.base_url_diffusions}/diffusion/{model}/text_to_image"
         payload = {
             "prompt": prompt,
             "height": height,
@@ -79,7 +90,7 @@ class SenseClient:
         Returns:
             The JSON response from the server.
         """
-        url = f"{self.base_url}/diffusion/{model}/image_to_image"
+        url = f"{self.base_url_diffusions}/diffusion/{model}/image_to_image"
         payload = {
             "image": image,
             "prompt": prompt,
@@ -94,7 +105,7 @@ class SenseClient:
                 return await response.json()
 
     async def interactive(self, model, prompt, temperature, repetition_penalty, top_p, top_k, max_tokens):
-        url = f"{self.base_url}/text_generation/{model}/chat/interactive"
+        url = f"{self.base_url_turbomind}/text_generation/{model}/chat/interactive"
         payload = {
             "prompt": prompt,
             "temperature": temperature,
@@ -120,7 +131,7 @@ class SenseClient:
 
 
     async def completion(self, model, messages, temperature, repetition_penalty, top_p, max_tokens):
-        url = f"{self.base_url}/text_generation/{model}/chat/completions"
+        url = f"{self.base_url_turbomind}/text_generation/{model}/chat/completions"
         payload = {
             "messages": messages,
             "temperature": temperature,
