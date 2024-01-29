@@ -49,7 +49,7 @@ class Miner(ABC):
         self.config = copy.deepcopy(config or self.get_default_config())
         bt.logging.info(f"Configurations: {self.config}")
 
-        self.sense = SenseClient(base_url=self.config.sense.base_url, api_key=self.config.sense.api_key)
+        self.sense = SenseClient(base_url_diffusions=self.config.sense.base_url_diffusions, base_url_turbomind=self.config.sense.base_url_turbomind, api_key=self.config.sense.api_key)
 
         # Initialize necessary Bittensor components
         self.initialize_wallet(wallet)
